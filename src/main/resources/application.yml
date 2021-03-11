@@ -1,0 +1,38 @@
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: makeus-hackathon
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://makeus-hackathon.clbn7tgxxyxe.ap-northeast-2.rds.amazonaws.com/makeusdb
+    username: admin
+    password: skdbstn15!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+  api-docs:
+    path: /api-docs
+  paths-to-match:
+    - /**
