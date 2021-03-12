@@ -1,6 +1,7 @@
 package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseEntity;
+import com.makeus.makeushackathon.src.user.User;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -14,9 +15,9 @@ public class Posting extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postingIdx;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="user_idx",referencedColumnName = "user_idx")
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_idx",referencedColumnName = "user_idx")
+    private User user;
 
     @Column(name="posting_description",nullable = false)
     private String postingDescription;
@@ -35,4 +36,12 @@ public class Posting extends BaseEntity {
 
     @Column(name="status")
     private String status = "ACTIVE";
+
+    public Posting(String postingDescription, String postingEmoji, String postingThumbnailUrl, String postingPicture1Url, String getPostingPicture2Url) {
+        this.postingDescription = postingDescription;
+        this.postingEmoji = postingEmoji;
+        this.postingThumbnailUrl = postingThumbnailUrl;
+        this.postingPicture1Url = postingPicture1Url;
+        this.getPostingPicture2Url = getPostingPicture2Url;
+    }
 }
