@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GetPostingRes {
+public class GetPostingRes {//상세 화면
     private final int postingIdx;
     private final String postingDescription;
     private List<String> tagNameList;

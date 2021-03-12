@@ -67,7 +67,7 @@ public class PostingController {
             return new BaseResponse<>(exception.getStatus());
         }
         try{
-            List<GetPostingRes> getPostingResList = postingService
+            List<GetPostingRes> getPostingResList = postingService.getPostings();
             return new BaseResponse<>(SUCCESS,getPostingResList);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());

@@ -3,6 +3,7 @@ package com.makeus.makeushackathon.src.tag;
 import com.makeus.makeushackathon.config.BaseEntity;
 import com.makeus.makeushackathon.src.posting.Posting;
 import com.makeus.makeushackathon.src.user.User;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="tag")
 @NoArgsConstructor
+@Getter
 public class Tag extends BaseEntity {
     @Id
     @Column(name="tag_idx",nullable = false,updatable = false)
