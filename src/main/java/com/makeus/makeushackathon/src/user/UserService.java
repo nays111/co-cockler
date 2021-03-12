@@ -1,6 +1,7 @@
 package com.makeus.makeushackathon.src.user;
 
 import com.makeus.makeushackathon.config.BaseException;
+import com.makeus.makeushackathon.src.user.dto.PostUserNicknameReq;
 import com.makeus.makeushackathon.src.user.dto.PostUserRes;
 import com.makeus.makeushackathon.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,18 @@ public class UserService {
             throw new BaseException(NOT_FOUND_USER);
         }
         return user;
+    }
+    public void postUserNickname(int userIdx,PostUserNicknameReq postUserNicknameReq) throws BaseException{
+        User user = retrieveUserInfoByUserIdx(userIdx);
+        user.setNickname(postUserNicknameReq.getNickname());
+        try{
+            userRepository.save(user);
+        }catch (Exception exception){
+            throw new BaseException(FAILED_TO_POST_USER_NICKNAME);
+        }
+    }
+    public Boolean isNicknameUsable(String nickname) {
+        return !userRepository.existsByNicknameAndStatus(nickname, "ACTIVE");
     }
 
 
