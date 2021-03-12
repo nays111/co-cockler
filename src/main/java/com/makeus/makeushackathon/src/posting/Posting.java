@@ -12,11 +12,7 @@ public class Posting extends BaseEntity {
     @Id
     @Column(name="posting_idx",nullable = false,updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int postingIdx;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="user_idx",referencedColumnName = "user_idx")
-//    private User user;
+    private Integer postingIdx;
 
     @Column(name="posting_description",nullable = false)
     private String postingDescription;
@@ -35,4 +31,8 @@ public class Posting extends BaseEntity {
 
     @Column(name="status")
     private String status = "ACTIVE";
+
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User user;
 }
