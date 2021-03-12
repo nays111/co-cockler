@@ -7,9 +7,12 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class GetPostingsRes {
+public class GetPostingsRes {//홈 피드뷰 조회 DTO
     private final int postingIdx;
     private final String postingDescription;
+    private final String postingThumbnailUrl;
+    private final String postingPicture1Url;
+    private final String getPostingPicture2Url;
     private final List<String> tagNameList;
     private final String createdDayBefore;
     private final int commentCount;
