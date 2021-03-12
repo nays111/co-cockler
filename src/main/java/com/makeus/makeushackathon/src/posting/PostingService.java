@@ -3,6 +3,7 @@ package com.makeus.makeushackathon.src.posting;
 import com.makeus.makeushackathon.config.BaseException;
 import com.makeus.makeushackathon.src.comment.Comment;
 import com.makeus.makeushackathon.src.comment.CommentRepository;
+import com.makeus.makeushackathon.src.posting.dto.GetCalendarRes;
 import com.makeus.makeushackathon.src.posting.dto.GetPostingRes;
 import com.makeus.makeushackathon.src.posting.dto.GetPostingsRes;
 import com.makeus.makeushackathon.src.posting.dto.PostPostingReq;
@@ -14,10 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
+import static org.springframework.core.OrderComparator.sort;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +77,29 @@ public class PostingService {
             getPostingsResList.add(getPostingsRes);
         }
         return getPostingsResList;
+    }
+    @Transactional(readOnly = true)
+    public List<GetCalendarRes> getCalendar(int userIdx,String year,String month)throws BaseException{
+        User user = userService.retrieveUserInfoByUserIdx(userIdx);
+        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE",user);
+        List<GetCalendarRes> getCalendarResList = new ArrayList<>();
+        for(int i=0;i<postingList.size();i++){
+            Date createdAt = postingList.get(i).getCreatedAt();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(createdAt);
+            int yearOf = cal.get(Calendar.YEAR);
+            int monthOf = cal.get(Calendar.MONTH);
+            monthOf++;
+            System.out.println(yearOf);
+            System.out.println(monthOf);
+            if(Integer.parseInt(year)==yearOf && Integer.parseInt(month)==monthOf){
+                int day = cal.get(Calendar.DATE);
+                String postingEmoji = postingList.get(i).getPostingEmoji();
+                GetCalendarRes getCalendarRes = new GetCalendarRes(day,postingEmoji);
+                getCalendarResList.add(getCalendarRes);
+            }
+        }
+        return getCalendarResList;
     }
 
 //    @Transactional(readOnly = true)

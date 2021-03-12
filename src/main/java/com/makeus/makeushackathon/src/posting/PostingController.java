@@ -2,6 +2,7 @@ package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseException;
 import com.makeus.makeushackathon.config.BaseResponse;
+import com.makeus.makeushackathon.src.posting.dto.GetCalendarRes;
 import com.makeus.makeushackathon.src.posting.dto.GetPostingRes;
 import com.makeus.makeushackathon.src.posting.dto.GetPostingsRes;
 import com.makeus.makeushackathon.src.posting.dto.PostPostingReq;
@@ -92,6 +93,25 @@ public class PostingController {
 //            return new BaseResponse<>(exception.getStatus());
 //        }
 //    }
+
+    @ResponseBody
+    @GetMapping("/api/v1/calendars")
+    @Operation(summary = "달력 조회 API", description = "JWT 토큰이 필요합니다.")
+    public BaseResponse<List<GetCalendarRes>> getCalendar(@RequestParam(required = true)String year,
+                                                          @RequestParam(required = true)String month){
+        int userIdx;
+        try{
+            userIdx = jwtService.getUserIdx();
+        }catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+        try{
+            List<GetCalendarRes> getCalendarResList = postingService.getCalendar(userIdx,year,month);
+            return new BaseResponse<>(SUCCESS,getCalendarResList);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 
