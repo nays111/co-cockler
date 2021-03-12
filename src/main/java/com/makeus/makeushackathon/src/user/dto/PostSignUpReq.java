@@ -1,2 +1,10 @@
-package com.makeus.makeushackathon.src.user.dto;public class PostSignUpReq {
+package com.makeus.makeushackathon.src.user.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
+public class PostSignUpReq {
+    private String nickname;
 }

@@ -1,2 +1,4 @@
-package com.makeus.makeushackathon.src.user.dto;public class PostLoginRes {
+package com.makeus.makeushackathon.src.user.dto;
+
+public class PostLoginRes {
 }
