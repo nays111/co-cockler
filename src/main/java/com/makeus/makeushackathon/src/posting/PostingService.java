@@ -1,12 +1,8 @@
 package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseException;
-import com.makeus.makeushackathon.src.comment.Comment;
 import com.makeus.makeushackathon.src.comment.CommentRepository;
-import com.makeus.makeushackathon.src.posting.dto.GetCalendarRes;
-import com.makeus.makeushackathon.src.posting.dto.GetPostingRes;
-import com.makeus.makeushackathon.src.posting.dto.GetPostingsRes;
-import com.makeus.makeushackathon.src.posting.dto.PostPostingReq;
+import com.makeus.makeushackathon.src.posting.dto.*;
 import com.makeus.makeushackathon.src.tag.Tag;
 import com.makeus.makeushackathon.src.tag.TagRepository;
 import com.makeus.makeushackathon.src.user.User;
@@ -15,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
@@ -79,28 +74,79 @@ public class PostingService {
         return getPostingsResList;
     }
     @Transactional(readOnly = true)
-    public List<GetCalendarRes> getCalendar(int userIdx,String year,String month)throws BaseException{
+    public GetCalendarRes getCalendar(int userIdx, String year, String month)throws BaseException{
         User user = userService.retrieveUserInfoByUserIdx(userIdx);
         List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE",user);
-        List<GetCalendarRes> getCalendarResList = new ArrayList<>();
+        List<GetCalendarDto> getCalendarDtoList = new ArrayList<>();
+        List<GetMyPostingsRes> getMyPostingsResList = new ArrayList<>();
+
+
         for(int i=0;i<postingList.size();i++){
             Date createdAt = postingList.get(i).getCreatedAt();
             Calendar cal = Calendar.getInstance();
             cal.setTime(createdAt);
             int yearOf = cal.get(Calendar.YEAR);
-            int monthOf = cal.get(Calendar.MONTH);
-            monthOf++;
-            System.out.println(yearOf);
-            System.out.println(monthOf);
+            int monthOf = cal.get(Calendar.MONTH)+1;
+
+
+
             if(Integer.parseInt(year)==yearOf && Integer.parseInt(month)==monthOf){
                 int day = cal.get(Calendar.DATE);
                 String postingEmoji = postingList.get(i).getPostingEmoji();
-                GetCalendarRes getCalendarRes = new GetCalendarRes(day,postingEmoji);
-                getCalendarResList.add(getCalendarRes);
+                GetCalendarDto getCalendarDto = new GetCalendarDto(day,postingEmoji);
+
+
+                int postingIdx = postingList.get(i).getPostingIdx();
+                String postingDescription = postingList.get(i).getPostingDescription();
+                String postingThumbnailUrl = postingList.get(i).getPostingThumbnailUrl();
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                String korDayOfWeek="";
+                switch (dayOfWeek){
+                    case 1 :
+                        korDayOfWeek = "일요일";
+                        break;
+                    case 2:
+                        korDayOfWeek = "월요일";
+                        break;
+                    case 3 :
+                        korDayOfWeek = "화요일";
+                        break;
+                    case 4:
+                        korDayOfWeek = "수요일";
+                        break;
+                    case 5 :
+                        korDayOfWeek = "목요일";
+                        break;
+                    case 6:
+                        korDayOfWeek = "금요일";
+                        break;
+                    case 7 :
+                        korDayOfWeek = "토요일";
+                        break;
+                }
+                String postingDate = (Integer.toString(day))+"일 "+korDayOfWeek;
+                GetMyPostingsRes getMyPostingsRes = new GetMyPostingsRes(postingIdx,postingDate,postingThumbnailUrl,postingDescription);
+
+                getCalendarDtoList.add(getCalendarDto);
+                getMyPostingsResList.add(getMyPostingsRes);
             }
         }
-        return getCalendarResList;
+        Collections.sort(getMyPostingsResList,new CompareGetMyPostingsRes());
+        GetCalendarRes getCalendarRes = new GetCalendarRes(getCalendarDtoList,getMyPostingsResList);
+        return getCalendarRes;
     }
+
+//    @Transactional(readOnly = true)
+//    public List<GetMyPostingsRes> getMyPosting(int userIdx,String year,String month,String day) throws BaseException{
+//        User user = userService.retrieveUserInfoByUserIdx(userIdx);
+//
+//        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE",user);
+//        for(int i=0;i<postingList.size();i++){
+//
+//        }
+//
+//
+//    }
 
 //    @Transactional(readOnly = true)
 //    public GetPostingRes getPosting(int postingIdx) throws BaseException{
@@ -117,3 +163,11 @@ public class PostingService {
 //        }
 //    }
 }
+class CompareGetMyPostingsRes implements Comparator<GetMyPostingsRes>{
+    @Override
+    public int compare(GetMyPostingsRes o1, GetMyPostingsRes o2) {
+        return o2.getPostingIdx()<o1.getPostingIdx() ? -1 : o2.getPostingIdx()>o1.getPostingIdx() ? 1:0;
+    }
+
+}
+

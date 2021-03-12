@@ -2,13 +2,9 @@ package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseException;
 import com.makeus.makeushackathon.config.BaseResponse;
-import com.makeus.makeushackathon.src.posting.dto.GetCalendarRes;
-import com.makeus.makeushackathon.src.posting.dto.GetPostingRes;
-import com.makeus.makeushackathon.src.posting.dto.GetPostingsRes;
-import com.makeus.makeushackathon.src.posting.dto.PostPostingReq;
+import com.makeus.makeushackathon.src.posting.dto.*;
 import com.makeus.makeushackathon.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,7 +93,7 @@ public class PostingController {
     @ResponseBody
     @GetMapping("/api/v1/calendars")
     @Operation(summary = "달력 조회 API", description = "JWT 토큰이 필요합니다.")
-    public BaseResponse<List<GetCalendarRes>> getCalendar(@RequestParam(required = true)String year,
+    public BaseResponse<GetCalendarRes> getCalendar(@RequestParam(required = true)String year,
                                                           @RequestParam(required = true)String month){
         int userIdx;
         try{
@@ -106,12 +102,32 @@ public class PostingController {
             return new BaseResponse<>(exception.getStatus());
         }
         try{
-            List<GetCalendarRes> getCalendarResList = postingService.getCalendar(userIdx,year,month);
-            return new BaseResponse<>(SUCCESS,getCalendarResList);
+            GetCalendarRes getCalendarRes = postingService.getCalendar(userIdx,year,month);
+            return new BaseResponse<>(SUCCESS, getCalendarRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+//    @ResponseBody
+//    @GetMapping
+//    @Operation(summary = "달력 상세 조회 API",description = "JWT 토큰이 필요합니다.")
+//    public BaseResponse<List<GetMyPostingsRes>> getMyPosting(@RequestParam(required = true) String year,
+//                                                             @RequestParam(required = true) String month,
+//                                                             @RequestParam(required = true) String day){
+//        int userIdx;
+//        try{
+//            userIdx = jwtService.getUserIdx();
+//        }catch(BaseException exception){
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//        try{
+//            List<GetMyPostingsRes> getMyPostingsResList = postingService.getMyPosting(userIdx,year,month,day);
+//            return new BaseResponse<>(SUCCESS,getMyPostingsResList);
+//        }catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 
 
 
