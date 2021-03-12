@@ -100,8 +100,7 @@ public class UserService {
             jsonObject = (JSONObject) jsonParser.parse(body);
             socialId = "kakao_"+jsonObject.get("id").toString();
             response = jsonObject.get("kakao_account").toString();
-        }
-        catch (Exception e){
+        } catch (Exception e){
             throw new BaseException(FAILED_TO_PARSE);
         }
 
@@ -139,8 +138,7 @@ public class UserService {
             } catch (Exception exception) {
                 throw new BaseException(DATABASE_ERROR);
             }
-        }
-        else{
+        } else{
             if(!user.getStatus().equals("ACTIVE")) {
                 user.setStatus("ACTIVE");
                 try {

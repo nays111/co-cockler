@@ -27,8 +27,14 @@ public class Comment extends BaseEntity {
     private Posting posting;
 
     @Column(name="comment_description")
-    private String comment_description;
+    private String commentDescription;
 
     @Column(name="status")
     private String status="ACTIVE";
+
+    public Comment(User user, Posting posting, String commentDescription) {
+        this.user = user;
+        this.posting = posting;
+        this.commentDescription = commentDescription;
+    }
 }

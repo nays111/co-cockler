@@ -20,6 +20,7 @@ public enum BaseResponseStatus {
     EMPTY_POSTING_EMOJI(false,2014,"이모지를 입력해주세요."),
     MAX_TAG_SIZE(false,2015,"태그는 최대 다섯개까지 입력가능합니다."),
     EMPTY_TOKEN(false,2016,"토큰을 입력해주세요."),
+    EMPTY_COMMENT_DESCRIPTION(false,2017,"댓글을 입력해주세요."),
 
 
 
@@ -36,6 +37,7 @@ public enum BaseResponseStatus {
     FAILED_TO_READ_RESPONSE(false,3017,"respose읽기에 실패했습니다."),
     FAILED_TO_PARSE(false,3018,"파싱 실패했습니다."),
     FAILED_TO_KAKAO_LOGIN(false,3019,"카카오 로그인에 실패하였습니다."),
+    FAILED_TO_POST_COMMENT(false,3020,"댓글 작성에 실패하였습니다."),
 
 
 
