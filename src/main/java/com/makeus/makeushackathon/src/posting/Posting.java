@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="Posting")
+@Table(name="posting")
 @NoArgsConstructor
 public class Posting extends BaseEntity {
     @Id
@@ -18,8 +18,17 @@ public class Posting extends BaseEntity {
 //    @JoinColumn(name="user_idx",referencedColumnName = "user_idx")
 //    private User user;
 
-    @Column(name="posting_description")
+    @Column(name="posting_description",nullable = false)
     private String postingDescription;
+
+    @Column(name="posting_thumbnail_url")
+    private String postingThumbnailUrl;
+
+    @Column(name="posting_picture1_url",nullable = true)
+    private String postingPicture1Url;
+
+    @Column(name="posting_picture2_url")
+    private String getPostingPicture2Url;
 
     @Column(name="status")
     private String status = "ACTIVE";
