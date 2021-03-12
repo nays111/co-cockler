@@ -16,8 +16,12 @@ public class Tag extends BaseEntity {
     private int tagIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_idx",referencedColumnName = "posting_idx")
+    @JoinColumn(name="posting_idx",referencedColumnName = "posting_idx")
     private Posting posting;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="user_idx",referencedColumnName = "user_idx")
+//    private User user;
 
     @Column(name="tag_name")
     private String tagName;
