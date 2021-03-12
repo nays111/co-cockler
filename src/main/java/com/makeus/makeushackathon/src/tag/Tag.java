@@ -28,5 +28,11 @@ public class Tag extends BaseEntity {
     private String tagName;
 
     @Column(name="status")
-    private String status;
+    private String status="ACTIVE";
+
+    public Tag(User user, Posting posting, String tagName) {
+        this.user = user;
+        this.posting = posting;
+        this.tagName = tagName;
+    }
 }
