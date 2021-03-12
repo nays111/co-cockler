@@ -57,6 +57,9 @@ dependencies {
 	compile group: 'javax.xml.soap', name: 'javax.xml.soap-api', version: '1.4.0'
 	compile group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
 	compile group: 'com.sun.xml.ws', name: 'jaxws-rt', version: '2.3.1'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+
+	implementation 'com.google.code.gson:gson:2.8.5'
 
 	implementation 'org.springdoc:springdoc-openapi-ui:1.5.4'
 

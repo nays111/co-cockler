@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class GetPostingRes {//상세 화면
-    private final int postingIdx;
     private final String postingDescription;
     private List<String> tagNameList;
     private final String createdDayBefore;

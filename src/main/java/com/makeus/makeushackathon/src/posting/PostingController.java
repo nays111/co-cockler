@@ -67,31 +67,31 @@ public class PostingController {
             return new BaseResponse<>(exception.getStatus());
         }
         try{
-            List<GetPostingRes> getPostingResList = postingService.getPostings();
+            List<GetPostingsRes> getPostingResList = postingService.getPostings();
             return new BaseResponse<>(SUCCESS,getPostingResList);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
-    @ResponseBody
-    @GetMapping("/api/v1/postings/{postingIdx}")
-    @Operation(summary="게시물 상세 조회 API",description = "JWT 토큰이 필요합니다.")
-    public BaseResponse<GetPostingRes> getPosting(@PathVariable(required = true)int postingIdx){
-        //jwt 검증
-        int userIdx;
-        try{
-            userIdx = jwtService.getUserIdx();
-        }catch(BaseException exception){
-            return new BaseResponse<>(exception.getStatus());
-        }
-        try{
-            GetPostingRes getPostingRes= postingService.
-            return new BaseResponse<>(SUCCESS,getPostingRes);
-        }catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
+//    @ResponseBody
+//    @GetMapping("/api/v1/postings/{postingIdx}")
+//    @Operation(summary="게시물 상세 조회 API",description = "JWT 토큰이 필요합니다.")
+//    public BaseResponse<GetPostingRes> getPosting(@PathVariable(required = true)int postingIdx){
+//        //jwt 검증
+//        int userIdx;
+//        try{
+//            userIdx = jwtService.getUserIdx();
+//        }catch(BaseException exception){
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//        try{
+//            GetPostingRes getPostingRes= postingService.getPosting(postingIdx);
+//            return new BaseResponse<>(SUCCESS,getPostingRes);
+//        }catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 
 
 
