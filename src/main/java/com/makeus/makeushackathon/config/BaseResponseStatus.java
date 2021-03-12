@@ -21,6 +21,8 @@ public enum BaseResponseStatus {
     MAX_TAG_SIZE(false,2015,"태그는 최대 다섯개까지 입력가능합니다."),
     EMPTY_TOKEN(false,2016,"토큰을 입력해주세요."),
     EMPTY_COMMENT_DESCRIPTION(false,2017,"댓글을 입력해주세요."),
+    EMPTY_USER_NICKNAME(false,2018,"닉네임을 입력해주세요."),
+
 
 
 
@@ -34,10 +36,12 @@ public enum BaseResponseStatus {
     FAILED_TO_GET_POSTING(false,3014,"게시물 조회에 실패하였습니다."),
     WRONG_URL(false,3015,"잘못된 URL입니다."),
     FAILED_TO_CONNECT(false,3016,"연결에 실패했습니다."),
-    FAILED_TO_READ_RESPONSE(false,3017,"respose읽기에 실패했습니다."),
+    FAILED_TO_READ_RESPONSE(false,3017,"response 읽기에 실패했습니다."),
     FAILED_TO_PARSE(false,3018,"파싱 실패했습니다."),
     FAILED_TO_KAKAO_LOGIN(false,3019,"카카오 로그인에 실패하였습니다."),
     FAILED_TO_POST_COMMENT(false,3020,"댓글 작성에 실패하였습니다."),
+    FAILED_TO_POST_USER_NICKNAME(false,3021,"닉네임 작성에 실패했습니다."),
+    DUPLICATED_NICKNAME(false,3022,"중복된 닉네임입니다."),
 
 
 

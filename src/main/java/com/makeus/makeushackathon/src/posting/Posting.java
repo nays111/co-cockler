@@ -34,16 +34,17 @@ public class Posting extends BaseEntity {
     private String postingPicture1Url;
 
     @Column(name="posting_picture2_url")
-    private String getPostingPicture2Url;
+    private String postingPicture2Url;
 
     @Column(name="status")
     private String status = "ACTIVE";
 
-    public Posting(String postingDescription, String postingEmoji, String postingThumbnailUrl, String postingPicture1Url, String getPostingPicture2Url) {
+    public Posting(String postingDescription, String postingEmoji, String postingThumbnailUrl, String postingPicture1Url, String postingPicture2Url,User user) {
         this.postingDescription = postingDescription;
         this.postingEmoji = postingEmoji;
         this.postingThumbnailUrl = postingThumbnailUrl;
         this.postingPicture1Url = postingPicture1Url;
-        this.getPostingPicture2Url = getPostingPicture2Url;
+        this.postingPicture2Url = postingPicture2Url;
+        this.user = user;
     }
 }

@@ -31,7 +31,7 @@ public class PostingService {
     public void postPosting(int userIdx, PostPostingReq postPostingReq) throws BaseException {
         User user = userService.retrieveUserInfoByUserIdx(userIdx);
         Posting posting = new Posting(postPostingReq.getPostingDescription(),postPostingReq.getPostingEmoji(),postPostingReq.getPostingThumbnailUrl(),
-                postPostingReq.getPostingPicture1Url(),postPostingReq.getGetPostingPicture2Url());
+                postPostingReq.getPostingPicture1Url(),postPostingReq.getGetPostingPicture2Url(),user);
         try{
             postingRepository.save(posting);
         }catch (Exception exception){
@@ -60,8 +60,9 @@ public class PostingService {
             String postingDescription = posting.getPostingDescription();
             String postingThumbnailUrl=posting.getPostingThumbnailUrl();
             String postingPicture1Url=posting.getPostingPicture1Url();
-            String postingPicture2Url=posting.getGetPostingPicture2Url();
+            String postingPicture2Url=posting.getPostingPicture2Url();
             String createdDayBefore = "00일전";//todo 수정 필요
+            //String postingEmoji = posting.getPostingEmoji();
             int commentCount = commentRepository.countAllByPostingAndStatus(posting,"ACTIVE");
             List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
             List<String> tagNameList = new ArrayList<>();
