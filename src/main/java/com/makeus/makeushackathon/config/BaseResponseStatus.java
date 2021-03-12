@@ -19,7 +19,6 @@ public enum BaseResponseStatus {
     EMPTY_POSTING_DESCRIPTION(false,2012,"게시글 내용을 입력해주세요."),
     EMPTY_POSTING_THUMBNAIL_URL(false,2013,"최소 사진한장은 등록해주세요."),
     EMPTY_POSTING_EMOJI(false,2014,"이모지를 입력해주세요."),
-
     MAX_TAG_SIZE(false,2015,"태그는 최대 다섯개까지 입력가능합니다."),
 
 
@@ -28,7 +27,8 @@ public enum BaseResponseStatus {
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
     NOT_FOUND_USER(false, 3010, "존재하지 않는 회원입니다."),
     FAILED_TO_GET_USER(false,3011,"회원 조회에 실패하였습니다."),
-
+    FAILED_TO_POST_POSTING(false,3012,"게시물 저장에 실패하였습니다."),
+    FAILED_TO_POST_TAG(false,3013,"태크 저장에 실패하였습니다."),
 
     // 4000 : Database 오류
     SERVER_ERROR(false, 4000, "서버와의 통신에 실패하였습니다."),
