@@ -1,6 +1,7 @@
 package com.makeus.makeushackathon.src.user;
 
 import com.makeus.makeushackathon.config.BaseEntity;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "user")
 @NoArgsConstructor
 @Getter
+@Data
 public class User extends BaseEntity {
     @Id
     @Column(name = "user_idx", nullable = false, updatable = false)
@@ -26,5 +28,10 @@ public class User extends BaseEntity {
 //    private List<Posting> postings;
     @Column(name="status")
     private String status = "ACTIVE";
+
+    public User(String socialId, String nickname) {
+        this.socialId = socialId;
+        this.nickname = nickname;
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseException;
+import com.makeus.makeushackathon.src.comment.Comment;
 import com.makeus.makeushackathon.src.comment.CommentRepository;
+import com.makeus.makeushackathon.src.posting.dto.GetPostingRes;
 import com.makeus.makeushackathon.src.posting.dto.GetPostingsRes;
 import com.makeus.makeushackathon.src.posting.dto.PostPostingReq;
 import com.makeus.makeushackathon.src.tag.Tag;
@@ -15,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.makeus.makeushackathon.config.BaseResponseStatus.FAILED_TO_POST_POSTING;
-import static com.makeus.makeushackathon.config.BaseResponseStatus.FAILED_TO_POST_TAG;
+import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +49,11 @@ public class PostingService {
         }
     }
     @Transactional(readOnly = true)
-    public List<GetPostingsRes> getPostings(){
-        List<Posting> postings = postingRepository.findAllByStatus("ACTIVE");
+    public List<GetPostingsRes> getPostings() throws BaseException{
+
+        List<GetPostingsRes> getPostingsResList = new ArrayList<>();
+
+        List<Posting> postings = postingRepository.findAllByStatusOrderByPostingIdxDesc("ACTIVE");
         for(int i=0;i<postings.size();i++){
             Posting posting = postings.get(i);
             int postingIdx = posting.getPostingIdx();
@@ -57,17 +61,33 @@ public class PostingService {
             String postingThumbnailUrl=posting.getPostingThumbnailUrl();
             String postingPicture1Url=posting.getPostingPicture1Url();
             String postingPicture2Url=posting.getGetPostingPicture2Url();
+            String createdDayBefore = "00일전";//todo 수정 필요
             int commentCount = commentRepository.countAllByPostingAndStatus(posting,"ACTIVE");
             List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
             List<String> tagNameList = new ArrayList<>();
             for(int j=0;j<tagList.size();j++){
-                String tagName = tagList.get(i).getTagName();
+                String tagName = tagList.get(j).getTagName();
                 tagNameList.add(tagName);
             }
             GetPostingsRes getPostingsRes = new GetPostingsRes(postingIdx,postingDescription,postingThumbnailUrl,postingPicture1Url,postingPicture2Url,
                     tagNameList,createdDayBefore,commentCount);
+            getPostingsResList.add(getPostingsRes);
         }
-
-
+        return getPostingsResList;
     }
+
+//    @Transactional(readOnly = true)
+//    public GetPostingRes getPosting(int postingIdx) throws BaseException{
+//        Posting posting = postingRepository.findAllByPostingIdxAndStatus(postingIdx,"ACTIVE");
+//        if(posting==null){
+//            throw new BaseException(FAILED_TO_GET_POSTING);
+//        }
+//        String postingDescription = posting.getPostingDescription();
+//        List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
+//        List<String> tagNameList = new ArrayList<>();
+//        for(int j=0;j<tagList.size();j++){
+//            String tagName = tagList.get(j).getTagName();
+//            tagNameList.add(tagName);
+//        }
+//    }
 }
