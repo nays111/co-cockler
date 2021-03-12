@@ -13,4 +13,5 @@ public class PostPostingReq {
     private String postingPicture1Url;
     private String getPostingPicture2Url;
     private List<String> tagNameList;
+    private String postingEmoji;
 }

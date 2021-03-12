@@ -21,6 +21,9 @@ public class Posting extends BaseEntity {
     @Column(name="posting_description",nullable = false)
     private String postingDescription;
 
+    @Column(name="posting_emoji",nullable = false)
+    private String postingEmoji;
+
     @Column(name="posting_thumbnail_url")
     private String postingThumbnailUrl;
 
