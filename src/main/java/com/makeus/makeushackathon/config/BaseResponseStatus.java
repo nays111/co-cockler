@@ -46,6 +46,7 @@ public enum BaseResponseStatus {
     FAILED_TO_POST_USER_NICKNAME(false,3021,"닉네임 작성에 실패했습니다."),
     DUPLICATED_NICKNAME(false,3022,"중복된 닉네임입니다."),
     NOT_USERS_POSTING(false,3033,"사용자의 게시물이 아닙니다."),
+    NOT_FOUND_TEG(false, 3500, "등록된 게시물이 없습니다."),
 
 
 
