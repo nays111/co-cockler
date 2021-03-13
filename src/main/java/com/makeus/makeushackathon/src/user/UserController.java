@@ -8,12 +8,12 @@ import com.makeus.makeushackathon.src.user.dto.PostUserReq;
 import com.makeus.makeushackathon.src.user.dto.PostUserRes;
 import com.makeus.makeushackathon.utils.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @CrossOrigin
 public class UserController {
