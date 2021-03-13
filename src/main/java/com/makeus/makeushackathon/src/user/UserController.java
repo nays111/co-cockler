@@ -66,7 +66,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("/api/v1/users")
     @Operation(summary = "회원 정보 조회 API", description = "헤더에 ACCESS-TOKEN 을 입력해주세요.")
-    public BaseResponse<GetUserRes> getUser(@RequestHeader("ACCESS-TOKEN") String accessToken) {
+    public BaseResponse<GetUserRes> getUser(@RequestHeader("X-ACCESS-TOKEN") String accessToken) {
         try {
             GetUserRes getUserRes = userService.getUser();
             return new BaseResponse<>(SUCCESS, getUserRes);
