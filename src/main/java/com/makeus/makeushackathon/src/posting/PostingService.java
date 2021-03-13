@@ -1,12 +1,14 @@
 package com.makeus.makeushackathon.src.posting;
 
 import com.makeus.makeushackathon.config.BaseException;
+import com.makeus.makeushackathon.src.comment.Comment;
 import com.makeus.makeushackathon.src.comment.CommentRepository;
 import com.makeus.makeushackathon.src.posting.dto.*;
 import com.makeus.makeushackathon.src.tag.Tag;
 import com.makeus.makeushackathon.src.tag.TagRepository;
 import com.makeus.makeushackathon.src.user.User;
 import com.makeus.makeushackathon.src.user.UserService;
+import com.makeus.makeushackathon.utils.TimeDiff;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import java.util.*;
 import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
 import static org.springframework.core.OrderComparator.sort;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class PostingService {
@@ -23,6 +27,7 @@ public class PostingService {
     private final TagRepository tagRepository;
     private final UserService userService;
     private final CommentRepository commentRepository;
+    private final TimeDiff timeDiff;
 
     @Transactional
     public void postPosting(int userIdx, PostPostingReq postPostingReq) throws BaseException {
@@ -45,6 +50,37 @@ public class PostingService {
             }
         }
     }
+    @Transactional(readOnly = true)
+    public GetPostingRes getPosting(int postingIdx) throws BaseException{
+        Posting posting = postingRepository.findAllByPostingIdxAndStatus(postingIdx,"ACTIVE");
+        if(posting==null){
+            throw new BaseException(FAILED_TO_GET_POSTING);
+        }
+        List<Comment> commentList = commentRepository.findAllByPostingAndStatus(posting,"ACTIVE");
+        List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
+        int commentCount = commentRepository.countAllByPostingAndStatus(posting,"ACTIVE");
+        String postingDescription = posting.getPostingDescription();
+        long regTime = posting.getCreatedAt().getTime();
+        long curTime = System.currentTimeMillis();
+        String createdDayBefore= timeDiff.timeDiff(regTime,curTime);
+        List<String> tagNameList = new ArrayList<>();
+        for(int i=0;i<tagList.size();i++){
+            String tagName = tagList.get(i).getTagName();
+            tagNameList.add(tagName);
+        }
+        List<GetCommentListDto> getCommentListDtoList = new ArrayList<>();
+        for(int i=0;i<commentList.size();i++){
+            int userIdx =commentList.get(i).getUser().getUserIdx();
+            String nickname = commentList.get(i).getUser().getNickname();
+            String commentDescription = commentList.get(i).getCommentDescription();
+            long commentRegTime = commentList.get(i).getCreatedAt().getTime();
+            String commentCreatedDayBefore =  timeDiff.timeDiff(commentRegTime,curTime);
+            GetCommentListDto getCommentListDto = new GetCommentListDto(userIdx,nickname,commentCreatedDayBefore,commentDescription);
+            getCommentListDtoList.add(getCommentListDto);
+        }
+        GetPostingRes getPostingRes = new GetPostingRes(postingDescription,tagNameList,createdDayBefore,commentCount,getCommentListDtoList);
+        return getPostingRes;
+    }
 
     @Transactional(readOnly = true)
     public List<GetPostingsRes> getPostings() throws BaseException {
@@ -59,8 +95,11 @@ public class PostingService {
             String postingThumbnailUrl = posting.getPostingThumbnailUrl();
             String postingPicture1Url = posting.getPostingPicture1Url();
             String postingPicture2Url = posting.getPostingPicture2Url();
-            String createdDayBefore = "00일전";//todo 수정 필요
-            //String postingEmoji = posting.getPostingEmoji();
+
+            long regTime = posting.getCreatedAt().getTime();
+            long curTime = System.currentTimeMillis();
+            String createdDayBefore= timeDiff.timeDiff(regTime,curTime);
+
             int commentCount = commentRepository.countAllByPostingAndStatus(posting, "ACTIVE");
             List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting, "ACTIVE");
             List<String> tagNameList = new ArrayList<>();
