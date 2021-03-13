@@ -1,5 +1,7 @@
 package com.makeus.makeushackathon.utils;
 
+import org.springframework.stereotype.Service;
+
 
 class TIME_MAXIMUM {
 
@@ -9,6 +11,7 @@ class TIME_MAXIMUM {
     public static final int DAY = 30;
     public static final int MONTH = 12;
 }
+@Service
 public class TimeDiff {
     public String timeDiff(long regTime,long curTime){
         String createdDayBefore="";

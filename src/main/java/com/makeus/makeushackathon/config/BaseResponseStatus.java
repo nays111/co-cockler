@@ -22,6 +22,9 @@ public enum BaseResponseStatus {
     EMPTY_TOKEN(false,2016,"토큰을 입력해주세요."),
     EMPTY_COMMENT_DESCRIPTION(false,2017,"댓글을 입력해주세요."),
     EMPTY_USER_NICKNAME(false,2018,"닉네임을 입력해주세요."),
+    EMPTY_YEAR(false,2019,"년도를 입력해주세요."),
+    EMPTY_MONTH(false,2020,"월을 입력해주세요."),
+    EMPTY_DAY(false,2021,"일을 입력해주세요."),
 
 
 
@@ -42,6 +45,7 @@ public enum BaseResponseStatus {
     FAILED_TO_POST_COMMENT(false,3020,"댓글 작성에 실패하였습니다."),
     FAILED_TO_POST_USER_NICKNAME(false,3021,"닉네임 작성에 실패했습니다."),
     DUPLICATED_NICKNAME(false,3022,"중복된 닉네임입니다."),
+    NOT_USERS_POSTING(false,3033,"사용자의 게시물이 아닙니다."),
 
 
 

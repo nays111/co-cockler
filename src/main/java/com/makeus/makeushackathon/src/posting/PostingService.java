@@ -51,10 +51,13 @@ public class PostingService {
         }
     }
     @Transactional(readOnly = true)
-    public GetPostingRes getPosting(int postingIdx) throws BaseException{
+    public GetPostingRes getPosting(int userIdx,int postingIdx) throws BaseException{
         Posting posting = postingRepository.findAllByPostingIdxAndStatus(postingIdx,"ACTIVE");
         if(posting==null){
             throw new BaseException(FAILED_TO_GET_POSTING);
+        }
+        if(posting.getUser().getUserIdx()!=userIdx){
+            throw new BaseException(NOT_USERS_POSTING);
         }
         List<Comment> commentList = commentRepository.findAllByPostingAndStatus(posting,"ACTIVE");
         List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
@@ -70,12 +73,12 @@ public class PostingService {
         }
         List<GetCommentListDto> getCommentListDtoList = new ArrayList<>();
         for(int i=0;i<commentList.size();i++){
-            int userIdx =commentList.get(i).getUser().getUserIdx();
+            int commentUserIdx =commentList.get(i).getUser().getUserIdx();
             String nickname = commentList.get(i).getUser().getNickname();
             String commentDescription = commentList.get(i).getCommentDescription();
             long commentRegTime = commentList.get(i).getCreatedAt().getTime();
             String commentCreatedDayBefore =  timeDiff.timeDiff(commentRegTime,curTime);
-            GetCommentListDto getCommentListDto = new GetCommentListDto(userIdx,nickname,commentCreatedDayBefore,commentDescription);
+            GetCommentListDto getCommentListDto = new GetCommentListDto(commentUserIdx,nickname,commentCreatedDayBefore,commentDescription);
             getCommentListDtoList.add(getCommentListDto);
         }
         GetPostingRes getPostingRes = new GetPostingRes(postingDescription,tagNameList,createdDayBefore,commentCount,getCommentListDtoList);
