@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<User,Integer> {
     User findBySocialId(String socialId);
-    boolean existsByNicknameAndStatus(String nickname,String status);
+    boolean existsBySocialIdAndStatus(String socialId, String status);
 }
