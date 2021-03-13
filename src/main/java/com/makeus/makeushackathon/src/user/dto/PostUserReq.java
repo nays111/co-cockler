@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class PostUserNicknameReq {
+public class PostUserReq {
     private String nickname;
 }

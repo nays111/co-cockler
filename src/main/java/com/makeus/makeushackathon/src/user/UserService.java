@@ -1,9 +1,11 @@
 package com.makeus.makeushackathon.src.user;
 
 import com.makeus.makeushackathon.config.BaseException;
-import com.makeus.makeushackathon.src.user.dto.PostUserNicknameReq;
+import com.makeus.makeushackathon.src.user.dto.PostLoginRes;
+import com.makeus.makeushackathon.src.user.dto.PostUserReq;
 import com.makeus.makeushackathon.src.user.dto.PostUserRes;
 import com.makeus.makeushackathon.utils.JwtService;
+import com.makeus.makeushackathon.utils.SNSLogin;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
@@ -26,6 +28,8 @@ import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
 public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final SNSLogin snsLogin;
+
     public User retrieveUserInfoByUserIdx(int userIdx) throws BaseException {
         User user;
         try {
@@ -38,135 +42,35 @@ public class UserService {
         }
         return user;
     }
-    public void postUserNickname(int userIdx,PostUserNicknameReq postUserNicknameReq) throws BaseException{
-        User user = retrieveUserInfoByUserIdx(userIdx);
-        user.setNickname(postUserNicknameReq.getNickname());
-        try{
-            userRepository.save(user);
-        }catch (Exception exception){
-            throw new BaseException(FAILED_TO_POST_USER_NICKNAME);
-        }
-    }
-    public Boolean isNicknameUsable(String nickname) {
-        return !userRepository.existsByNicknameAndStatus(nickname, "ACTIVE");
+    public Boolean isSocialIdxUsable(String socialId) {
+        return !userRepository.existsBySocialIdAndStatus(socialId, "ACTIVE");
     }
 
+    public PostUserRes createUser(String accessToken, PostUserReq parameters) throws BaseException{
+        User newUser = new User(snsLogin.socialIdByKakao(accessToken), parameters.getNickname());
 
-    public PostUserRes kakaoLogin(String accessToken) throws BaseException {
-        JSONObject jsonObject;
-
-        String header = "Bearer " + accessToken; // Bearer 다음에 공백 추가
-        String apiURL = "https://kapi.kakao.com/v2/user/me";
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("Authorization", header);
-
-        HttpURLConnection con;
         try {
-            URL url = new URL(apiURL);
-            con = (HttpURLConnection) url.openConnection();
-        } catch (MalformedURLException e) {
-            throw new BaseException(WRONG_URL);
-        } catch (IOException e) {
-            throw new BaseException(FAILED_TO_CONNECT);
-        }
-
-        String body;
-        try {
-            con.setRequestMethod("GET");
-            for (Map.Entry<String, String> rqheader : requestHeaders.entrySet()) {
-                con.setRequestProperty(rqheader.getKey(), rqheader.getValue());
-            }
-
-            int responseCode = con.getResponseCode();
-            InputStreamReader streamReader;
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
-                streamReader = new InputStreamReader(con.getInputStream());
-            } else { // 에러 발생
-                streamReader = new InputStreamReader(con.getErrorStream());
-            }
-
-            BufferedReader lineReader = new BufferedReader(streamReader);
-            StringBuilder responseBody = new StringBuilder();
-
-            String line;
-            while ((line = lineReader.readLine()) != null) {
-                responseBody.append(line);
-            }
-
-            body = responseBody.toString();
-        } catch (IOException e) {
-            throw new BaseException(FAILED_TO_READ_RESPONSE);
-        } finally {
-            con.disconnect();
-        }
-
-        if (body.length() == 0) {
-            throw new BaseException(FAILED_TO_READ_RESPONSE);
-        }
-        System.out.println(body);
-
-        String socialId;
-        String response;
-        try{
-            JSONParser jsonParser = new JSONParser();
-            jsonObject = (JSONObject) jsonParser.parse(body);
-            socialId = "kakao_"+jsonObject.get("id").toString();
-            response = jsonObject.get("kakao_account").toString();
-        } catch (Exception e){
-            throw new BaseException(FAILED_TO_PARSE);
-        }
-
-        String profilePhoto=null;
-        String userName=null;
-        String email=null;
-        String phoneNumber=null;
-        try {
-            JSONParser jsonParser = new JSONParser();
-            JSONObject responObj = (JSONObject) jsonParser.parse(response);
-            if(responObj.get("email")!=null) {
-                email = responObj.get("email").toString();
-            }
-            String profile = responObj.get("profile").toString();
-            JSONObject profileObj = (JSONObject) jsonParser.parse(profile);
-            userName = profileObj.get("nickname").toString();
-
-            if(profileObj.get("profile_image")!=null) {
-                profilePhoto = profileObj.get("profile_image").toString();
-            }
-        } catch (Exception e){
-            throw new BaseException(FAILED_TO_PARSE);
-        }
-
-        User user = null;
-        try {
-            user = userRepository.findBySocialId(socialId);
-        } catch (Exception ignored) {
+            newUser = userRepository.save(newUser);
+        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-        if (user == null) {
-            user = new User(socialId,userName);
+
+        return new PostUserRes(newUser.getUserIdx(), jwtService.createJwt(newUser.getUserIdx()));
+    }
+
+    public PostLoginRes loginUser(String accessToken) throws BaseException {
+        String socialId = snsLogin.socialIdByKakao(accessToken);
+
+        User user = null;
+        if(isSocialIdxUsable(socialId)) {
             try {
-                user = userRepository.save(user);
+                user = userRepository.findBySocialId(socialId);
             } catch (Exception exception) {
-                throw new BaseException(DATABASE_ERROR);
+                //
             }
-        } else{
-            if(!user.getStatus().equals("ACTIVE")) {
-                user.setStatus("ACTIVE");
-                try {
-                    user = userRepository.save(user);
-                } catch (Exception exception) {
-                    throw new BaseException(DATABASE_ERROR);
-                }
-            }
+            return new PostLoginRes(true, jwtService.createJwt(user.getUserIdx()));
         }
-        try {
-            Integer userIdx = user.getUserIdx();
-            String jwt = jwtService.createJwt(userIdx);
-            return new PostUserRes(userIdx, jwt);
-        }catch(Exception e){
-            throw new BaseException(FAILED_TO_KAKAO_LOGIN);
-        }
+
+        return new PostLoginRes(false, null);
     }
 }
