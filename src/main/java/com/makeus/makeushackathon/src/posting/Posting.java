@@ -31,10 +31,10 @@ public class Posting extends BaseEntity {
     private String postingThumbnailUrl;
 
     @Column(name="posting_picture1_url",nullable = true)
-    private String postingPicture1Url;
+    private String postingPicture1Url="";
 
     @Column(name="posting_picture2_url")
-    private String postingPicture2Url;
+    private String postingPicture2Url="";
 
     @Column(name="status")
     private String status = "ACTIVE";
