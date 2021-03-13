@@ -83,7 +83,7 @@ public class PostingController {
             return new BaseResponse<>(exception.getStatus());
         }
         try{
-            GetPostingRes getPostingRes= postingService.getPosting(postingIdx);
+            GetPostingRes getPostingRes= postingService.getPosting(userIdx,postingIdx);
             return new BaseResponse<>(SUCCESS,getPostingRes);
         }catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -100,6 +100,12 @@ public class PostingController {
             userIdx = jwtService.getUserIdx();
         }catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
+        }
+        if(year==null){
+            return new BaseResponse<>(EMPTY_YEAR);
+        }
+        if(month==null){
+            return new BaseResponse<>(EMPTY_MONTH);
         }
         try{
             GetCalendarRes getCalendarRes = postingService.getCalendar(userIdx,year,month);
@@ -120,6 +126,15 @@ public class PostingController {
             userIdx = jwtService.getUserIdx();
         }catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
+        }
+        if(year==null){
+            return new BaseResponse<>(EMPTY_YEAR);
+        }
+        if(month==null){
+            return new BaseResponse<>(EMPTY_MONTH);
+        }
+        if(day==null){
+            return new BaseResponse<>(EMPTY_DAY);
         }
         try{
             List<GetMyPostingsRes> getMyPostingsResList = postingService.getMyPosting(userIdx,year,month,day);
