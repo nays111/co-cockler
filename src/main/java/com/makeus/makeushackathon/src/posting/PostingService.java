@@ -27,142 +27,170 @@ public class PostingService {
     @Transactional
     public void postPosting(int userIdx, PostPostingReq postPostingReq) throws BaseException {
         User user = userService.retrieveUserInfoByUserIdx(userIdx);
-        Posting posting = new Posting(postPostingReq.getPostingDescription(),postPostingReq.getPostingEmoji(),postPostingReq.getPostingThumbnailUrl(),
-                postPostingReq.getPostingPicture1Url(),postPostingReq.getGetPostingPicture2Url(),user);
-        try{
+        Posting posting = new Posting(postPostingReq.getPostingDescription(), postPostingReq.getPostingEmoji(), postPostingReq.getPostingThumbnailUrl(),
+                postPostingReq.getPostingPicture1Url(), postPostingReq.getGetPostingPicture2Url(), user);
+        try {
             postingRepository.save(posting);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             throw new BaseException(FAILED_TO_POST_POSTING);
         }
         List<String> tagList = postPostingReq.getTagNameList();
-        for(int i=0;i<tagList.size();i++){
+        for (int i = 0; i < tagList.size(); i++) {
             String tagName = tagList.get(i);
-            Tag tag  = new Tag(user,posting,tagName);
-            try{
+            Tag tag = new Tag(user, posting, tagName);
+            try {
                 tagRepository.save(tag);
-            }catch (Exception exception){
+            } catch (Exception exception) {
                 throw new BaseException(FAILED_TO_POST_TAG);
             }
         }
     }
+
     @Transactional(readOnly = true)
-    public List<GetPostingsRes> getPostings() throws BaseException{
+    public List<GetPostingsRes> getPostings() throws BaseException {
 
         List<GetPostingsRes> getPostingsResList = new ArrayList<>();
 
         List<Posting> postings = postingRepository.findAllByStatusOrderByPostingIdxDesc("ACTIVE");
-        for(int i=0;i<postings.size();i++){
+        for (int i = 0; i < postings.size(); i++) {
             Posting posting = postings.get(i);
             int postingIdx = posting.getPostingIdx();
             String postingDescription = posting.getPostingDescription();
-            String postingThumbnailUrl=posting.getPostingThumbnailUrl();
-            String postingPicture1Url=posting.getPostingPicture1Url();
-            String postingPicture2Url=posting.getPostingPicture2Url();
+            String postingThumbnailUrl = posting.getPostingThumbnailUrl();
+            String postingPicture1Url = posting.getPostingPicture1Url();
+            String postingPicture2Url = posting.getPostingPicture2Url();
             String createdDayBefore = "00일전";//todo 수정 필요
             //String postingEmoji = posting.getPostingEmoji();
-            int commentCount = commentRepository.countAllByPostingAndStatus(posting,"ACTIVE");
-            List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
+            int commentCount = commentRepository.countAllByPostingAndStatus(posting, "ACTIVE");
+            List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting, "ACTIVE");
             List<String> tagNameList = new ArrayList<>();
-            for(int j=0;j<tagList.size();j++){
+            for (int j = 0; j < tagList.size(); j++) {
                 String tagName = tagList.get(j).getTagName();
                 tagNameList.add(tagName);
             }
-            GetPostingsRes getPostingsRes = new GetPostingsRes(postingIdx,postingDescription,postingThumbnailUrl,postingPicture1Url,postingPicture2Url,
-                    tagNameList,createdDayBefore,commentCount);
+            GetPostingsRes getPostingsRes = new GetPostingsRes(postingIdx, postingDescription, postingThumbnailUrl, postingPicture1Url, postingPicture2Url,
+                    tagNameList, createdDayBefore, commentCount);
             getPostingsResList.add(getPostingsRes);
         }
         return getPostingsResList;
     }
+
     @Transactional(readOnly = true)
-    public GetCalendarRes getCalendar(int userIdx, String year, String month)throws BaseException{
+    public GetCalendarRes getCalendar(int userIdx, String year, String month) throws BaseException {
         User user = userService.retrieveUserInfoByUserIdx(userIdx);
-        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE",user);
+        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE", user);
         List<GetCalendarDto> getCalendarDtoList = new ArrayList<>();
         List<GetMyPostingsRes> getMyPostingsResList = new ArrayList<>();
 
 
-        for(int i=0;i<postingList.size();i++){
+        for (int i = 0; i < postingList.size(); i++) {
             Date createdAt = postingList.get(i).getCreatedAt();
             Calendar cal = Calendar.getInstance();
             cal.setTime(createdAt);
             int yearOf = cal.get(Calendar.YEAR);
-            int monthOf = cal.get(Calendar.MONTH)+1;
+            int monthOf = cal.get(Calendar.MONTH) + 1;
 
 
-
-            if(Integer.parseInt(year)==yearOf && Integer.parseInt(month)==monthOf){
+            if (Integer.parseInt(year) == yearOf && Integer.parseInt(month) == monthOf) {
                 int day = cal.get(Calendar.DATE);
                 String postingEmoji = postingList.get(i).getPostingEmoji();
-                GetCalendarDto getCalendarDto = new GetCalendarDto(day,postingEmoji);
+                GetCalendarDto getCalendarDto = new GetCalendarDto(day, postingEmoji);
 
 
                 int postingIdx = postingList.get(i).getPostingIdx();
                 String postingDescription = postingList.get(i).getPostingDescription();
                 String postingThumbnailUrl = postingList.get(i).getPostingThumbnailUrl();
                 int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-                String korDayOfWeek="";
-                switch (dayOfWeek){
-                    case 1 :
+                String korDayOfWeek = "";
+                switch (dayOfWeek) {
+                    case 1:
                         korDayOfWeek = "일요일";
                         break;
                     case 2:
                         korDayOfWeek = "월요일";
                         break;
-                    case 3 :
+                    case 3:
                         korDayOfWeek = "화요일";
                         break;
                     case 4:
                         korDayOfWeek = "수요일";
                         break;
-                    case 5 :
+                    case 5:
                         korDayOfWeek = "목요일";
                         break;
                     case 6:
                         korDayOfWeek = "금요일";
                         break;
-                    case 7 :
+                    case 7:
                         korDayOfWeek = "토요일";
                         break;
                 }
-                String postingDate = (Integer.toString(day))+"일 "+korDayOfWeek;
-                GetMyPostingsRes getMyPostingsRes = new GetMyPostingsRes(postingIdx,postingDate,postingThumbnailUrl,postingDescription);
+                String postingDate = (Integer.toString(day)) + "일 " + korDayOfWeek;
+                GetMyPostingsRes getMyPostingsRes = new GetMyPostingsRes(postingIdx, postingDate, postingThumbnailUrl, postingDescription);
 
                 getCalendarDtoList.add(getCalendarDto);
                 getMyPostingsResList.add(getMyPostingsRes);
             }
         }
-        Collections.sort(getMyPostingsResList,new CompareGetMyPostingsRes());
-        GetCalendarRes getCalendarRes = new GetCalendarRes(getCalendarDtoList,getMyPostingsResList);
+        Collections.sort(getMyPostingsResList, new CompareGetMyPostingsRes());
+        GetCalendarRes getCalendarRes = new GetCalendarRes(getCalendarDtoList, getMyPostingsResList);
         return getCalendarRes;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<GetMyPostingsRes> getMyPosting(int userIdx,String year,String month,String day) throws BaseException{
-//        User user = userService.retrieveUserInfoByUserIdx(userIdx);
-//
-//        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE",user);
-//        for(int i=0;i<postingList.size();i++){
-//
-//        }
-//
-//
-//    }
+    @Transactional(readOnly = true)
+    public List<GetMyPostingsRes> getMyPosting(int userIdx, String year, String month, String day) throws BaseException {
+        User user = userService.retrieveUserInfoByUserIdx(userIdx);
+        List<GetMyPostingsRes> getMyPostingsResList = new ArrayList<>();
+        List<Posting> postingList = postingRepository.findAllByStatusAndUser("ACTIVE", user);
+        for (int i = 0; i < postingList.size(); i++) {
+            Date createdAt = postingList.get(i).getCreatedAt();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(createdAt);
+            int yearOf = cal.get(Calendar.YEAR);
+            int monthOf = cal.get(Calendar.MONTH) + 1;
+            int dayOf = cal.get(Calendar.DATE);
+            if (Integer.parseInt(year) == yearOf && Integer.parseInt(month) == monthOf && Integer.parseInt(day) <= dayOf) {
 
-//    @Transactional(readOnly = true)
-//    public GetPostingRes getPosting(int postingIdx) throws BaseException{
-//        Posting posting = postingRepository.findAllByPostingIdxAndStatus(postingIdx,"ACTIVE");
-//        if(posting==null){
-//            throw new BaseException(FAILED_TO_GET_POSTING);
-//        }
-//        String postingDescription = posting.getPostingDescription();
-//        List<Tag> tagList = tagRepository.findAllByPostingAndStatus(posting,"ACTIVE");
-//        List<String> tagNameList = new ArrayList<>();
-//        for(int j=0;j<tagList.size();j++){
-//            String tagName = tagList.get(j).getTagName();
-//            tagNameList.add(tagName);
-//        }
-//    }
+
+                int postingIdx = postingList.get(i).getPostingIdx();
+                String postingDescription = postingList.get(i).getPostingDescription();
+                String postingThumbnailUrl = postingList.get(i).getPostingThumbnailUrl();
+                int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+                String korDayOfWeek = "";
+                switch (dayOfWeek) {
+                    case 1:
+                        korDayOfWeek = "일요일";
+                        break;
+                    case 2:
+                        korDayOfWeek = "월요일";
+                        break;
+                    case 3:
+                        korDayOfWeek = "화요일";
+                        break;
+                    case 4:
+                        korDayOfWeek = "수요일";
+                        break;
+                    case 5:
+                        korDayOfWeek = "목요일";
+                        break;
+                    case 6:
+                        korDayOfWeek = "금요일";
+                        break;
+                    case 7:
+                        korDayOfWeek = "토요일";
+                        break;
+                }
+                String postingDate = (Integer.toString(dayOf)) + "일 " + korDayOfWeek;
+                GetMyPostingsRes getMyPostingsRes = new GetMyPostingsRes(postingIdx, postingDate, postingThumbnailUrl, postingDescription);
+                getMyPostingsResList.add(getMyPostingsRes);
+            }
+        }
+        Collections.sort(getMyPostingsResList, new CompareGetMyPostingsRes());
+        return getMyPostingsResList;
+    }
 }
+
+
 class CompareGetMyPostingsRes implements Comparator<GetMyPostingsRes>{
     @Override
     public int compare(GetMyPostingsRes o1, GetMyPostingsRes o2) {
@@ -170,4 +198,5 @@ class CompareGetMyPostingsRes implements Comparator<GetMyPostingsRes>{
     }
 
 }
+
 
