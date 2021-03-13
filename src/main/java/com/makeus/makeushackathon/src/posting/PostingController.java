@@ -109,25 +109,25 @@ public class PostingController {
         }
     }
 
-//    @ResponseBody
-//    @GetMapping
-//    @Operation(summary = "달력 상세 조회 API",description = "JWT 토큰이 필요합니다.")
-//    public BaseResponse<List<GetMyPostingsRes>> getMyPosting(@RequestParam(required = true) String year,
-//                                                             @RequestParam(required = true) String month,
-//                                                             @RequestParam(required = true) String day){
-//        int userIdx;
-//        try{
-//            userIdx = jwtService.getUserIdx();
-//        }catch(BaseException exception){
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//        try{
-//            List<GetMyPostingsRes> getMyPostingsResList = postingService.getMyPosting(userIdx,year,month,day);
-//            return new BaseResponse<>(SUCCESS,getMyPostingsResList);
-//        }catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    @ResponseBody
+    @GetMapping("api/v1/my-postings")
+    @Operation(summary = "달력 상세 조회 API",description = "JWT 토큰이 필요합니다.")
+    public BaseResponse<List<GetMyPostingsRes>> getMyPosting(@RequestParam(required = true) String year,
+                                                             @RequestParam(required = true) String month,
+                                                             @RequestParam(required = true) String day){
+        int userIdx;
+        try{
+            userIdx = jwtService.getUserIdx();
+        }catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+        try{
+            List<GetMyPostingsRes> getMyPostingsResList = postingService.getMyPosting(userIdx,year,month,day);
+            return new BaseResponse<>(SUCCESS,getMyPostingsResList);
+        }catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
 
