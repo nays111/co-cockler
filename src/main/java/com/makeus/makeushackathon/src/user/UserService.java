@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 
 import static com.makeus.makeushackathon.config.BaseResponseStatus.*;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public Boolean isSocialIdxUsable(String socialId) {
-        return !userRepository.existsBySocialIdAndStatus(socialId, "ACTIVE");
+        return userRepository.existsBySocialIdAndStatus(socialId, "ACTIVE");
     }
     public PostUserRes createUser(String accessToken, PostUserReq parameters) throws BaseException{
         User newUser = new User(snsLogin.socialIdByKakao(accessToken), parameters.getNickname());
