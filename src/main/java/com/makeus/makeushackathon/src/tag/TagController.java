@@ -17,7 +17,7 @@ public class TagController {
 
     @ResponseBody
     @GetMapping("/api/v1/postings-recommendation")
-    @Operation(summary = "추천 게시물 조회 API", description = "헤더에 KAKAO-ACCESS-TOKEN 을 입력해주세요.")
+    @Operation(summary = "추천 게시물 조회 API", description = "헤더에 X-ACCESS-TOKEN 을 입력해주세요.")
     public BaseResponse<GetRecommendationRes> getRecommendationPosting(@RequestHeader("X-ACCESS-TOKEN") String accessTokeng) {
         try {
             GetRecommendationRes getRecommendationRes = tagService.retrieveRecommendationPosting();
