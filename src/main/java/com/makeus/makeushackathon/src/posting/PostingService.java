@@ -191,7 +191,9 @@ public class PostingService {
             int yearOf = cal.get(Calendar.YEAR);
             int monthOf = cal.get(Calendar.MONTH) + 1;
             int dayOf = cal.get(Calendar.DATE);
-            if (Integer.parseInt(year) == yearOf && Integer.parseInt(month) == monthOf && Integer.parseInt(day) <= dayOf) {
+            if (Integer.parseInt(year) == yearOf && Integer.parseInt(month) == monthOf && Integer.parseInt(day) >= dayOf) {
+                System.out.println(dayOf);
+                System.out.println(day);
 
 
                 int postingIdx = postingList.get(i).getPostingIdx();
