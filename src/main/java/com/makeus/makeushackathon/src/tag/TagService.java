@@ -79,7 +79,7 @@ public class TagService {
         }
 
         Random random = new Random();
-        int randomIdx = random.nextInt(recommendationTagList.size()) + 1;
+        int randomIdx = random.nextInt(recommendationTagList.size());
         return new GetRecommendationRes(recommendationTagList.get(randomIdx).getPosting().getPostingIdx(),
                     "오늘의 추천 게시글입니다.\n이 게시물은 어때요?");
     }
